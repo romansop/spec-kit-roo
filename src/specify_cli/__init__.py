@@ -51,7 +51,8 @@ import readchar
 AI_CHOICES = {
     "copilot": "GitHub Copilot",
     "claude": "Claude Code",
-    "gemini": "Gemini CLI"
+    "gemini": "Gemini CLI",
+    "roo": "Roo Code",
 }
 
 # ASCII Art Banner
@@ -411,7 +412,7 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, verb
         asset for asset in release_data.get("assets", [])
         if pattern in asset["name"] and asset["name"].endswith(".zip")
     ]
-    
+
     if not matching_assets:
         if verbose:
             console.print(f"[red]Error:[/red] No template found for AI assistant '{ai_assistant}'")
@@ -784,8 +785,21 @@ def init(
                         tracker.error("git", "init failed")
                 else:
                     tracker.skip("git", "git not available")
-            else:
-                tracker.skip("git", "--no-git flag")
+                else:
+                    tracker.skip("git", "--no-git flag")
+
+            # Roo integration: make Roo slash commands available by copying templates/commands → .roo/commands
+            if selected_ai == "roo":
+                try:
+                    commands_src = project_path / "templates" / "commands"
+                    commands_dst = project_path / ".roo" / "commands"
+                    if commands_src.exists():
+                        commands_dst.mkdir(parents=True, exist_ok=True)
+                        for item in commands_src.glob("*.md"):
+                            shutil.copy2(item, commands_dst / item.name)
+                except Exception as copy_err:
+                    # Non-fatal: still proceed, user can copy manually
+                    tracker.skip("commands", f"Roo commands copy skipped: {copy_err}")
 
             tracker.complete("final", "project ready")
         except Exception as e:
@@ -823,6 +837,11 @@ def init(
         steps_lines.append("   - See GEMINI.md for all available commands")
     elif selected_ai == "copilot":
         steps_lines.append(f"{step_num}. Open in Visual Studio Code and use [bold cyan]/specify[/], [bold cyan]/plan[/], [bold cyan]/tasks[/] commands with GitHub Copilot")
+    elif selected_ai == "roo":
+        steps_lines.append(f"{step_num}. Open in VS Code with the Roo Code extension installed")
+        steps_lines.append("   - Enable Experimental → Run Slash Command in Roo settings")
+        steps_lines.append("   - Use /specify, /plan, /tasks in the command palette (slash menu)")
+        steps_lines.append("   - Commands were copied to .roo/commands; verify files exist if they don't show up")
 
     step_num += 1
     steps_lines.append(f"{step_num}. Update [bold magenta]CONSTITUTION.md[/bold magenta] with your project's non-negotiable principles")
