@@ -7,6 +7,7 @@
 #     "platformdirs",
 #     "readchar",
 #     "httpx",
+#     "pyyaml",
 # ]
 # ///
 """
@@ -29,6 +30,7 @@ import zipfile
 import tempfile
 import shutil
 import json
+import yaml
 from pathlib import Path
 from typing import Optional
 
@@ -773,7 +775,7 @@ def init(
         try:
             download_and_extract_template(project_path, selected_ai, here, verbose=False, tracker=tracker)
 
-            # Git step
+            # Git step (use consistent indentation and handle --no-git)
             if not no_git:
                 tracker.start("git")
                 if is_git_repo(project_path):
@@ -785,21 +787,76 @@ def init(
                         tracker.error("git", "init failed")
                 else:
                     tracker.skip("git", "git not available")
-                else:
-                    tracker.skip("git", "--no-git flag")
+            else:
+                tracker.skip("git", "--no-git flag")
 
-            # Roo integration: make Roo slash commands available by copying templates/commands → .roo/commands
+            # Enhanced Roo integration with intelligent mode merging and rules copying
             if selected_ai == "roo":
                 try:
+                    # Step 1: Copy slash commands (existing logic)
                     commands_src = project_path / "templates" / "commands"
                     commands_dst = project_path / ".roo" / "commands"
                     if commands_src.exists():
                         commands_dst.mkdir(parents=True, exist_ok=True)
                         for item in commands_src.glob("*.md"):
                             shutil.copy2(item, commands_dst / item.name)
+
+                    # Step 2: Intelligent mode merging - merge spec-kit modes without overwriting existing
+                    roo_modes_src = project_path / "templates" / "roo" / "modes.yml"
+                    roomodes_dst = project_path / ".roomodes"
+                    
+                    if roo_modes_src.exists():
+                        # Load spec-kit modes
+                        with open(roo_modes_src, 'r') as f:
+                            spec_kit_data = yaml.safe_load(f)
+                        
+                        existing_data = {"customModes": []}
+                        existing_mode_slugs = set()
+                        
+                        # Load existing .roomodes if it exists
+                        if roomodes_dst.exists():
+                            try:
+                                with open(roomodes_dst, 'r') as f:
+                                    existing_data = yaml.safe_load(f) or {"customModes": []}
+                                    if "customModes" not in existing_data:
+                                        existing_data["customModes"] = []
+                                    existing_mode_slugs = {mode["slug"] for mode in existing_data["customModes"]}
+                            except Exception:
+                                existing_data = {"customModes": []}
+                        
+                        # Merge spec-kit modes that don't already exist
+                        if spec_kit_data and "customModes" in spec_kit_data:
+                            for new_mode in spec_kit_data["customModes"]:
+                                if new_mode["slug"] not in existing_mode_slugs:
+                                    existing_data["customModes"].append(new_mode)
+                        
+                        # Write merged modes back to .roomodes
+                        with open(roomodes_dst, 'w') as f:
+                            yaml.dump(existing_data, f, default_flow_style=False, sort_keys=False)
+
+                    # Step 3: Copy XML workflow rules only if they don't exist
+                    rules_src = project_path / "templates" / "roo" / "rules"
+                    rules_dst = project_path / ".roo"
+                    
+                    if rules_src.exists():
+                        rules_dst.mkdir(parents=True, exist_ok=True)
+                        for rule_dir in rules_src.glob("*"):
+                            if rule_dir.is_dir():
+                                dst_rule_dir = rules_dst / f"rules-{rule_dir.name}"
+                                if not dst_rule_dir.exists():
+                                    shutil.copytree(rule_dir, dst_rule_dir)
+
+                    # Step 4: Initialize AGENTS.md using update-agent-context.sh if available
+                    update_script = project_path / "scripts" / "update-agent-context.sh"
+                    if update_script.exists():
+                        try:
+                            subprocess.run(["bash", str(update_script), "roo"], check=False)
+                        except Exception:
+                            pass
+                            
                 except Exception as copy_err:
                     # Non-fatal: still proceed, user can copy manually
-                    tracker.skip("commands", f"Roo commands copy skipped: {copy_err}")
+                    tracker.skip("roo-setup", f"Roo integration skipped: {copy_err}")
 
             tracker.complete("final", "project ready")
         except Exception as e:

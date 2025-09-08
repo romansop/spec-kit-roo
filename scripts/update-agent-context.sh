@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Incrementally update agent context files based on new feature plan
-# Supports: CLAUDE.md, GEMINI.md, and .github/copilot-instructions.md
+# Supports: CLAUDE.md, GEMINI.md, .github/copilot-instructions.md, and Roo Code AGENTS.md
 # O(1) operation - only reads current context file and new plan.md
 
 set -e
@@ -14,6 +14,7 @@ NEW_PLAN="$FEATURE_DIR/plan.md"
 CLAUDE_FILE="$REPO_ROOT/CLAUDE.md"
 GEMINI_FILE="$REPO_ROOT/GEMINI.md"
 COPILOT_FILE="$REPO_ROOT/.github/copilot-instructions.md"
+ROO_FILE="$REPO_ROOT/AGENTS.md"
 
 # Allow override via argument
 AGENT_TYPE="$1"
@@ -197,16 +198,20 @@ case "$AGENT_TYPE" in
     "copilot")
         update_agent_file "$COPILOT_FILE" "GitHub Copilot"
         ;;
+    "roo")
+        update_agent_file "$ROO_FILE" "Roo Code"
+        ;;
     "")
         # Update all existing files
         [ -f "$CLAUDE_FILE" ] && update_agent_file "$CLAUDE_FILE" "Claude Code"
         [ -f "$GEMINI_FILE" ] && update_agent_file "$GEMINI_FILE" "Gemini CLI" 
         [ -f "$COPILOT_FILE" ] && update_agent_file "$COPILOT_FILE" "GitHub Copilot"
+        [ -f "$ROO_FILE" ] && update_agent_file "$ROO_FILE" "Roo Code"
         
         # If no files exist, create based on current directory or ask user
-        if [ ! -f "$CLAUDE_FILE" ] && [ ! -f "$GEMINI_FILE" ] && [ ! -f "$COPILOT_FILE" ]; then
-            echo "No agent context files found. Creating Claude Code context file by default."
-            update_agent_file "$CLAUDE_FILE" "Claude Code"
+        if [ ! -f "$CLAUDE_FILE" ] && [ ! -f "$GEMINI_FILE" ] && [ ! -f "$COPILOT_FILE" ] && [ ! -f "$ROO_FILE" ]; then
+            echo "No agent context files found. Creating Roo Code AGENTS.md by default."
+            update_agent_file "$ROO_FILE" "Roo Code"
         fi
         ;;
     *)
@@ -232,3 +237,4 @@ echo "  - No argument: Update all existing agent context files"
 echo "  - claude: Update only CLAUDE.md"
 echo "  - gemini: Update only GEMINI.md" 
 echo "  - copilot: Update only .github/copilot-instructions.md"
+echo "  - roo: Update only AGENTS.md (Roo Code)"

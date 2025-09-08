@@ -32,10 +32,16 @@ Spec-Driven Development **flips the script** on traditional software development
 
 ### 1. Install Specify
 
-Initialize your project depending on the coding agent you're using:
+Initialize your project depending on the coding agent you're using.
 
+- From upstream (default):
 ```bash
 uvx --from git+https://github.com/github/spec-kit.git specify init <PROJECT_NAME>
+```
+
+- From fork (Michaelzag/spec-kit):
+```bash
+uvx --from git+https://github.com/Michaelzag/spec-kit.git specify init <PROJECT_NAME>
 ```
 
 ### 2. Create the spec
@@ -143,14 +149,18 @@ You will be prompted to select the AI agent you are using. You can also proactiv
 specify init <project_name> --ai claude
 specify init <project_name> --ai gemini
 specify init <project_name> --ai copilot
+# Roo Code support
+specify init <project_name> --ai roo
 # Or in current directory:
 specify init --here --ai claude
+specify init --here --ai roo
 ```
 
 The CLI will check if you have Claude Code or Gemini CLI installed. If you do not, or you prefer to get the templates without checking for the right tools, use `--ignore-agent-tools` with your command:
 
 ```bash
 specify init <project_name> --ai claude --ignore-agent-tools
+specify init <project_name> --ai roo --ignore-agent-tools
 ```
 
 ### **STEP 1:** Bootstrap the project

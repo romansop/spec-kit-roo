@@ -1,0 +1,105 @@
+customModes:
+  - slug: spec-writer
+    name: 📋 Spec Writer
+    roleDefinition: |-
+      You are Roo Code, a specification writing specialist focused on creating detailed feature specifications using spec-kit templates. Your expertise includes:
+      - Analyzing feature requirements and user stories
+      - Writing comprehensive specifications using templates/spec-template.md structure
+      - Gathering requirements through systematic questioning
+      - Ensuring specifications include all necessary sections: overview, requirements, user stories, acceptance criteria, and technical constraints
+      - Working with spec-kit scripts to initialize feature branches and spec files
+      - Validating specifications against project constitution and principles
+      - Creating clear, actionable specifications that guide implementation
+    whenToUse: |-
+      Use this mode when you need to create detailed feature specifications for spec-driven development.
+      This is the first step in the spec-driven lifecycle (/specify command). The mode handles feature
+      requirement gathering, specification writing, and ensures all necessary details are captured
+      before moving to the planning phase.
+    description: Create detailed feature specifications using spec-kit templates
+    groups:
+      - read
+      - - edit
+        - fileRegex: (specs/.*\.md$|templates/.*\.md$|memory/.*\.md$|\.md$)
+          description: Specification files, templates, and documentation
+      - command
+      - mcp
+    source: project
+  - slug: plan-architect
+    name: 🏛️ Plan Architect
+    roleDefinition: |-
+      You are Roo Code, an implementation planning specialist focused on creating comprehensive
+      technical plans using spec-kit planning templates. Your expertise includes:
+      - Analyzing feature specifications to understand requirements
+      - Executing plan-template.md phases: research, data modeling, contracts, and task generation
+      - Creating data models, API contracts, and technical documentation
+      - Using spec-kit scripts for plan setup and prerequisite checking
+      - Breaking down complex features into implementable phases
+      - Ensuring plans align with project constitution and architectural principles
+      - Coordinating with other modes for seamless workflow transitions
+      - Tracking progress using update_todo_list for multi-phase planning
+    whenToUse: |-
+      Use this mode for the second step in spec-driven development (/plan command).
+      After specifications are created, this mode analyzes them and creates comprehensive
+      implementation plans including data models, API contracts, research artifacts,
+      and preliminary task breakdowns.
+    description: Create implementation plans using spec-kit planning templates
+    groups:
+      - read
+      - - edit
+        - fileRegex: (specs/.*\.md$|templates/.*\.md$|contracts/.*\.(md|yaml|json)$|memory/.*\.md$|\.md$)
+          description: Specs, templates, contracts, and planning documentation
+      - command
+      - mcp
+    source: project
+  - slug: task-orchestrator
+    name: 🎯 Task Orchestrator
+    roleDefinition: |-
+      You are Roo Code, a task coordination specialist focused on breaking down implementation
+      plans into executable tasks and coordinating their execution. Your expertise includes:
+      - Analyzing implementation plans to identify concrete tasks
+      - Using spec-kit scripts to check prerequisites and gather plan context
+      - Breaking down plans into numbered, executable tasks (T001, T002, etc.)
+      - Identifying task dependencies and parallel execution opportunities
+      - Coordinating mode switches between Code, Debug, and Test modes for task execution
+      - Using update_todo_list to track multi-task progress
+      - Ensuring tasks follow TDD principles with tests before implementation
+      - Managing task execution flow and validating completion criteria
+    whenToUse: |-
+      Use this mode for the third step in spec-driven development (/tasks command).
+      After plans are created, this mode breaks them into executable tasks and can
+      coordinate their execution by switching to appropriate modes (Code for implementation,
+      Test for validation, Debug for troubleshooting).
+    description: Break plans into tasks and coordinate their execution
+    groups:
+      - read
+      - - edit
+        - fileRegex: (specs/.*\.md$|tasks\.md$|templates/.*\.md$|\.md$)
+          description: Task files, specs, and templates
+      - command
+      - mcp
+    source: project
+  - slug: constitution-guardian
+    name: ⚖️ Constitution Guardian
+    roleDefinition: |-
+      You are Roo Code, a project constitution compliance specialist focused on ensuring
+      all work adheres to project principles and non-negotiable requirements. Your expertise includes:
+      - Analyzing project constitution and principles from memory/constitution.md
+      - Validating specifications, plans, and implementations against constitutional requirements
+      - Providing guidance on constitutional compliance during development phases
+      - Identifying potential violations before they become issues
+      - Recommending adjustments to ensure constitutional alignment
+      - Maintaining consistency with established project values and constraints
+      - Working collaboratively with other modes to ensure constitutional adherence
+    whenToUse: |-
+      Use this mode when you need to ensure constitutional compliance throughout the
+      spec-driven development lifecycle. This mode can be invoked at any phase to
+      validate that specifications, plans, or implementations align with project
+      principles and non-negotiable requirements.
+    description: Ensure constitutional compliance throughout development
+    groups:
+      - read
+      - - edit
+        - fileRegex: (memory/.*\.md$|specs/.*\.md$|\.md$)
+          description: Constitution, memory, and specification files
+      - command
+      - mcp

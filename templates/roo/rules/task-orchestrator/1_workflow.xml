@@ -1,0 +1,243 @@
+<task_orchestrator_workflow>
+  <mode_overview>
+    The Task Orchestrator mode handles the third step in spec-driven development: breaking down implementation
+    plans into executable tasks and coordinating their execution. This mode integrates with spec-kit's /tasks
+    command workflow and can coordinate mode switches for task execution.
+  </mode_overview>
+
+  <initialization_steps>
+    <step number="1">
+      <title>Initialize Task Context</title>
+      <action>Run spec-kit task prerequisites script</action>
+      <tools>
+        <tool>execute_command</tool>
+        <command>bash scripts/check-task-prerequisites.sh --json</command>
+        <purpose>Get feature directory and available documentation</purpose>
+      </tools>
+      <details>
+        Parse JSON output for:
+        - FEATURE_DIR: Directory containing planning artifacts
+        - AVAILABLE_DOCS: List of available design documents
+        - PROJECT_ROOT: Absolute path to project root
+      </details>
+      <validation>Verify feature directory exists and contains planning artifacts</validation>
+    </step>
+
+    <step number="2">
+      <title>Load Available Design Documents</title>
+      <action>Read and analyze all available planning documents</action>
+      <required_documents>
+        <document>
+          <name>plan.md</name>
+          <purpose>Tech stack, libraries, and overall architecture</purpose>
+          <always_required>true</always_required>
+        </document>
+      </required_documents>
+      <conditional_documents>
+        <document>
+          <name>data-model.md</name>
+          <purpose>Entity definitions and relationships</purpose>
+          <condition>Available for data-driven applications</condition>
+        </document>
+        <document>
+          <name>contracts/</name>
+          <purpose>API endpoint specifications</purpose>
+          <condition>Available for API-based projects</condition>
+        </document>
+        <document>
+          <name>research.md</name>
+          <purpose>Technical decisions and analysis</purpose>
+          <condition>Available when research phase completed</condition>
+        </document>
+        <document>
+          <name>quickstart.md</name>
+          <purpose>Test scenarios and integration examples</purpose>
+          <condition>Available when contract design completed</condition>
+        </document>
+      </conditional_documents>
+      <validation>Understand available context for task generation</validation>
+    </step>
+
+    <step number="3">
+      <title>Load Task Template</title>
+      <action>Examine the task template structure</action>
+      <tools>
+        <tool>read_file</tool>
+        <path>templates/tasks-template.md</path>
+        <purpose>Understanding task structure and generation rules</purpose>
+      </tools>
+      <validation>Understand task numbering, dependencies, and parallel execution patterns</validation>
+    </step>
+  </initialization_steps>
+
+  <main_workflow>
+    <phase name="task_generation">
+      <description>Generate executable tasks based on available design documents</description>
+      <progress_tracking>
+        <tool>update_todo_list</tool>
+        <initial_todos>
+          <todo>Analyze design documents</todo>
+          <todo>Generate setup tasks</todo>
+          <todo>Generate test tasks</todo>
+          <todo>Generate core implementation tasks</todo>
+          <todo>Generate integration tasks</todo>
+          <todo>Generate polish tasks</todo>
+          <todo>Order tasks by dependencies</todo>
+          <todo>Create final tasks.md</todo>
+        </initial_todos>
+      </progress_tracking>
+
+      <step number="1">
+        <title>Generate Setup Tasks</title>
+        <action>Create foundational setup tasks</action>
+        <task_types>
+          <task_type>Project initialization and configuration</task_type>
+          <task_type>Dependency installation and setup</task_type>
+          <task_type>Development environment configuration</task_type>
+          <task_type>Linting and code quality setup</task_type>
+        </task_types>
+        <numbering_pattern>T001, T002, etc.</numbering_pattern>
+        <validation>Setup tasks cover all foundational requirements</validation>
+      </step>
+
+      <step number="2">
+        <title>Generate Test Tasks</title>
+        <action>Create test tasks marked with [P] for parallel execution</action>
+        <generation_rules>
+          <rule>Each contract file generates one contract test task marked [P]</rule>
+          <rule>Each entity in data-model generates one test task marked [P]</rule>
+          <rule>Each user story generates one integration test marked [P]</rule>
+          <rule>Different files can be worked on in parallel</rule>
+        </generation_rules>
+        <tdd_focus>Tests are generated before implementation tasks</tdd_focus>
+        <validation>Test coverage is comprehensive and follows TDD principles</validation>
+      </step>
+
+      <step number="3">
+        <title>Generate Core Implementation Tasks</title>
+        <action>Create implementation tasks with proper sequencing</action>
+        <generation_rules>
+          <rule>Each entity in data-model generates one model creation task</rule>
+          <rule>Each endpoint generates one implementation task</rule>
+          <rule>Shared files require sequential execution (no [P] marking)</rule>
+          <rule>Independent files can be marked [P] for parallel execution</rule>
+        </generation_rules>
+        <dependency_management>
+          <dependency>Models must be created before services</dependency>
+          <dependency>Services must be created before endpoints</dependency>
+          <dependency>Core functionality before integration</dependency>
+        </dependency_management>
+        <validation>Implementation tasks have clear dependencies and file paths</validation>
+      </step>
+
+      <step number="4">
+        <title>Generate Integration and Polish Tasks</title>
+        <action>Create final integration and polish tasks</action>
+        <integration_tasks>
+          <task>Database connections and middleware setup</task>
+          <task>Authentication and authorization integration</task>
+          <task>External service integrations</task>
+          <task>Logging and monitoring setup</task>
+        </integration_tasks>
+        <polish_tasks>
+          <task>Unit test completion marked [P]</task>
+          <task>Performance optimization</task>
+          <task>Documentation updates</task>
+          <task>Code review and cleanup</task>
+        </polish_tasks>
+        <validation>All tasks are specific enough for LLM execution</validation>
+      </step>
+    </phase>
+
+    <phase name="task_coordination">
+      <description>Create and manage the execution of generated tasks</description>
+      <step number="1">
+        <title>Create Final Tasks Document</title>
+        <action>Generate comprehensive tasks.md file</action>
+        <tools>
+          <tool>write_to_file</tool>
+          <purpose>Create tasks.md in feature directory</purpose>
+        </tools>
+        <document_structure>
+          <section>Feature overview and context</section>
+          <section>Numbered tasks (T001, T002, etc.)</section>
+          <section>Dependency notes and execution order</section>
+          <section>Parallel execution guidance</section>
+          <section>Mode switching instructions</section>
+        </document_structure>
+      </step>
+
+      <step number="2">
+        <title>Coordinate Task Execution</title>
+        <action>Manage task execution through appropriate mode switches</action>
+        <execution_patterns>
+          <pattern>
+            <task_type>Implementation tasks</task_type>
+            <target_mode>code</target_mode>
+            <switch_command>switch_mode code</switch_command>
+          </pattern>
+          <pattern>
+            <task_type>Test creation tasks</task_type>
+            <target_mode>test</target_mode>
+            <switch_command>switch_mode test</switch_command>
+          </pattern>
+          <pattern>
+            <task_type>Debugging tasks</task_type>
+            <target_mode>debug</target_mode>
+            <switch_command>switch_mode debug</switch_command>
+          </pattern>
+        </execution_patterns>
+        <progress_tracking>
+          <tool>update_todo_list</tool>
+          <purpose>Track task completion status</purpose>
+        </progress_tracking>
+      </step>
+
+      <step number="3">
+        <title>Validate Task Completion</title>
+        <action>Ensure all tasks meet completion criteria</action>
+        <validation_checks>
+          <check>All numbered tasks have been addressed</check>
+          <check>Test coverage requirements met</check>
+          <check>Code quality standards maintained</check>
+          <check>Documentation is up to date</check>
+          <check>No breaking changes introduced</check>
+        </validation_checks>
+      </step>
+    </phase>
+
+    <phase name="workflow_handoff">
+      <description>Prepare for feature completion and integration</description>
+      <step number="1">
+        <title>Validate Feature Completion</title>
+        <action>Ensure all tasks completed successfully</action>
+        <completion_checklist>
+          <item>All implementation tasks marked complete</item>
+          <item>Tests pass for all components</item>
+          <item>Integration tests validate user stories</item>
+          <item>Documentation reflects implementation</item>
+        </completion_checklist>
+      </step>
+
+      <step number="2">
+        <title>Prepare for Integration</title>
+        <action>Document completion status for merge/integration</action>
+        <handoff_artifacts>
+          <artifact>Completed tasks summary</artifact>
+          <artifact>Test results and coverage</artifact>
+          <artifact>Implementation notes</artifact>
+          <artifact>Integration requirements</artifact>
+        </handoff_artifacts>
+      </step>
+    </phase>
+  </main_workflow>
+
+  <completion_criteria>
+    <criterion>All planning documents analyzed</criterion>
+    <criterion>Tasks.md file created with numbered, executable tasks</criterion>
+    <criterion>Task dependencies clearly documented</criterion>
+    <criterion>Parallel execution opportunities identified</criterion>
+    <criterion>Mode switching instructions included</criterion>
+    <criterion>Tasks are specific enough for LLM execution without additional context</criterion>
+  </completion_criteria>
+</task_orchestrator_workflow>

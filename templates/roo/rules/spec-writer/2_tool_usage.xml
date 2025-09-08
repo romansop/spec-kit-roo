@@ -1,0 +1,184 @@
+<spec_writer_tool_usage>
+  <overview>
+    Tool usage guidelines specific to the Spec Writer mode for creating feature specifications
+    in spec-driven development workflows using spec-kit integration.
+  </overview>
+
+  <tool_priorities>
+    <priority level="1">
+      <tool>execute_command</tool>
+      <when>Initialize spec-kit context with create-new-feature.sh script</when>
+      <why>Required to get branch name and spec file paths from spec-kit</why>
+    </priority>
+    <priority level="2">
+      <tool>read_file</tool>
+      <when>Load templates and constitution for specification context</when>
+      <why>Understanding spec structure and constitutional requirements</why>
+    </priority>
+    <priority level="3">
+      <tool>ask_followup_question</tool>
+      <when>Gather missing requirements and clarify specifications</when>
+      <why>Specifications must be complete and unambiguous</why>
+    </priority>
+    <priority level="4">
+      <tool>write_to_file</tool>
+      <when>Create the final specification document</when>
+      <why>Generate the spec file in the designated location</why>
+    </priority>
+  </tool_priorities>
+
+  <tool_specific_guidance>
+    <tool name="execute_command">
+      <purpose>Run spec-kit scripts for initialization and context gathering</purpose>
+      <when_to_use>At the start of specification workflow to get paths and branch info</when_to_use>
+      <syntax>
+        <command>bash scripts/create-new-feature.sh --json "{feature_description}"</command>
+        <parameters>
+          <parameter name="feature_description" required="true">
+            <description>User's feature description passed as JSON string</description>
+            <type>string</type>
+            <example>"User authentication system with OAuth integration"</example>
+          </parameter>
+        </parameters>
+      </syntax>
+      <best_practices>
+        <practice>Always parse JSON output for BRANCH_NAME and SPEC_FILE paths</practice>
+        <practice>Use absolute paths returned by the script</practice>
+        <practice>Verify script execution success before proceeding</practice>
+      </best_practices>
+      <example>
+        <scenario>Initialize feature specification</scenario>
+        <code><![CDATA[
+<execute_command>
+<command>bash scripts/create-new-feature.sh --json "User authentication system"</command>
+</execute_command>
+        ]]></code>
+        <expected_output>JSON with BRANCH_NAME and SPEC_FILE absolute paths</expected_output>
+      </example>
+    </tool>
+
+    <tool name="ask_followup_question">
+      <purpose>Gather comprehensive requirements for complete specifications</purpose>
+      <when_to_use>When user requirements are incomplete or need clarification</when_to_use>
+      <best_practices>
+        <practice>Focus on one requirement area at a time (functional, non-functional, etc.)</practice>
+        <practice>Provide specific, actionable options rather than open-ended questions</practice>
+        <practice>Guide toward constitutional compliance in suggestions</practice>
+        <practice>Include examples in suggestions when helpful</practice>
+      </best_practices>
+      <example>
+        <scenario>Clarify user authentication requirements</scenario>
+        <code><![CDATA[
+<ask_followup_question>
+<question>For the user authentication feature, what specific authentication methods should be supported?</question>
+<follow_up>
+<suggest>Email/password with optional 2FA</suggest>
+<suggest>OAuth integration with Google, GitHub, and Microsoft</suggest>
+<suggest>Magic link authentication (passwordless)</suggest>
+<suggest>All of the above with configurable options</suggest>
+</follow_up>
+</ask_followup_question>
+        ]]></code>
+      </example>
+    </tool>
+
+    <tool name="codebase_search">
+      <purpose>Find existing similar features and architectural patterns</purpose>
+      <when_to_use>Before writing specifications to understand existing implementations</when_to_use>
+      <search_patterns>
+        <pattern>authentication systems</pattern>
+        <pattern>user management features</pattern>
+        <pattern>API patterns and conventions</pattern>
+        <pattern>database schema patterns</pattern>
+      </search_patterns>
+      <best_practices>
+        <practice>Use before asking detailed questions to inform requirement gathering</practice>
+        <practice>Search for constitutional constraints and patterns</practice>
+        <practice>Look for existing test patterns to inform acceptance criteria</practice>
+      </best_practices>
+    </tool>
+
+    <tool name="read_file">
+      <purpose>Load templates, constitution, and existing specifications</purpose>
+      <when_to_use>To understand spec structure and constitutional requirements</when_to_use>
+      <critical_files>
+        <file path="templates/spec-template.md">Specification structure and required sections</file>
+        <file path="memory/constitution.md">Project principles and constraints</file>
+        <file path="existing specs">Reference implementations and patterns</file>
+      </critical_files>
+      <best_practices>
+        <practice>Always read spec template before writing specifications</practice>
+        <practice>Reference constitution for non-negotiable requirements</practice>
+        <practice>Use existing specs as quality examples</practice>
+      </best_practices>
+    </tool>
+
+    <tool name="write_to_file">
+      <purpose>Create the final specification document</purpose>
+      <when_to_use>After all requirements gathered and template structure understood</when_to_use>
+      <path_source>Use SPEC_FILE path from create-new-feature.sh script output</path_source>
+      <best_practices>
+        <practice>Use absolute path from script output</practice>
+        <practice>Follow template structure exactly</practice>
+        <practice>Include all gathered requirements in appropriate sections</practice>
+        <practice>Ensure constitutional compliance in all requirements</practice>
+        <practice>Write clear, actionable acceptance criteria</practice>
+      </best_practices>
+      <quality_checks>
+        <check>All template sections completed</check>
+        <check>Requirements are specific and testable</check>
+        <check>Acceptance criteria follow "Given, When, Then" format</check>
+        <check>Constitutional compliance verified</check>
+      </quality_checks>
+    </tool>
+  </tool_specific_guidance>
+
+  <tool_combinations>
+    <combination name="initialization_sequence">
+      <description>Standard sequence for starting specification work</description>
+      <steps>
+        <step>execute_command: Run create-new-feature.sh script</step>
+        <step>read_file: Load spec template and constitution</step>
+        <step>codebase_search: Find existing patterns and constraints</step>
+        <step>ask_followup_question: Gather missing requirements</step>
+      </steps>
+    </combination>
+
+    <combination name="specification_creation">
+      <description>Complete specification document creation</description>
+      <steps>
+        <step>ask_followup_question: Final requirement validation</step>
+        <step>write_to_file: Create specification document</step>
+        <step>read_file: Verify specification was created correctly</step>
+      </steps>
+    </combination>
+  </tool_combinations>
+
+  <integration_with_speckit>
+    <script_integration>
+      <script name="create-new-feature.sh">
+        <purpose>Initialize feature branch and spec file</purpose>
+        <output>JSON with BRANCH_NAME and SPEC_FILE paths</output>
+        <usage>Always run first to establish working context</usage>
+      </script>
+    </script_integration>
+    
+    <template_integration>
+      <template name="spec-template.md">
+        <purpose>Provides structure for all specifications</purpose>
+        <usage>Must be read and followed for consistent spec format</usage>
+        <sections>Overview, User Stories, Requirements, Acceptance Criteria, Constraints</sections>
+      </template>
+    </template_integration>
+
+    <constitutional_integration>
+      <constitution_file>memory/constitution.md</constitution_file>
+      <purpose>Ensure all specifications align with project principles</purpose>
+      <validation_points>
+        <point>Feature aligns with project mission</point>
+        <point>Requirements respect constitutional constraints</point>
+        <point>User experience matches project standards</point>
+      </validation_points>
+    </constitutional_integration>
+  </integration_with_speckit>
+</spec_writer_tool_usage>

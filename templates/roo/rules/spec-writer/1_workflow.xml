@@ -1,0 +1,185 @@
+<spec_writer_workflow>
+  <mode_overview>
+    The Spec Writer mode handles the first step in spec-driven development: creating comprehensive feature specifications.
+    This mode integrates with spec-kit's /specify command workflow, using templates and scripts to ensure all
+    necessary specification details are captured before moving to the planning phase.
+  </mode_overview>
+
+  <initialization_steps>
+    <step number="1">
+      <title>Parse User Feature Request</title>
+      <action>Understand the user's feature description</action>
+      <details>
+        Analyze the user's input to identify:
+        - Core feature purpose and goals
+        - Target users and use cases
+        - Functional requirements
+        - Any mentioned constraints or dependencies
+        - Success criteria or acceptance criteria
+      </details>
+      <validation>Ensure you understand what the user wants to build</validation>
+    </step>
+
+    <step number="2">
+      <title>Initialize Spec-Kit Context</title>
+      <action>Run spec-kit initialization script</action>
+      <tools>
+        <tool>execute_command</tool>
+        <command>bash scripts/create-new-feature.sh --json "{feature_description}"</command>
+        <purpose>Creates feature branch and initializes spec file with absolute paths</purpose>
+      </tools>
+      <details>
+        Parse JSON output for:
+        - BRANCH_NAME: The created git branch for this feature
+        - SPEC_FILE: Absolute path to the specification file
+        - FEATURE_NAME: Standardized feature name
+      </details>
+      <validation>Verify branch creation and spec file initialization</validation>
+    </step>
+
+    <step number="3">
+      <title>Load Specification Template</title>
+      <action>Examine the spec template structure</action>
+      <tools>
+        <tool>read_file</tool>
+        <path>templates/spec-template.md</path>
+        <purpose>Understanding required sections and structure for specifications</purpose>
+      </tools>
+      <validation>Understand all required specification sections</validation>
+    </step>
+  </initialization_steps>
+
+  <main_workflow>
+    <phase name="requirement_gathering">
+      <description>Gather comprehensive feature requirements through systematic questioning</description>
+      <steps>
+        <step number="1">
+          <title>Clarify Core Requirements</title>
+          <action>Use ask_followup_question to gather missing details</action>
+          <focus_areas>
+            <area>User personas and target audience</area>
+            <area>Key user journeys and workflows</area>
+            <area>Functional requirements and capabilities</area>
+            <area>Non-functional requirements (performance, security, etc.)</area>
+            <area>Integration requirements</area>
+          </focus_areas>
+        </step>
+
+        <step number="2">
+          <title>Define Success Criteria</title>
+          <action>Establish clear, measurable acceptance criteria</action>
+          <guidelines>
+            <guideline>Use "Given, When, Then" format for user stories</guideline>
+            <guideline>Include positive and negative test scenarios</guideline>
+            <guideline>Define quantifiable success metrics</guideline>
+          </guidelines>
+        </step>
+
+        <step number="3">
+          <title>Identify Constraints and Dependencies</title>
+          <action>Document technical and business constraints</action>
+          <tools>
+            <tool>codebase_search</tool>
+            <query>existing similar features or related components</query>
+            <purpose>Understanding current architecture and constraints</purpose>
+          </tools>
+        </step>
+      </steps>
+    </phase>
+
+    <phase name="constitution_alignment">
+      <description>Ensure specification aligns with project constitution</description>
+      <steps>
+        <step number="1">
+          <title>Review Project Constitution</title>
+          <action>Read and analyze project principles</action>
+          <tools>
+            <tool>read_file</tool>
+            <path>memory/constitution.md</path>
+            <purpose>Understanding non-negotiable project requirements</purpose>
+          </tools>
+        </step>
+
+        <step number="2">
+          <title>Validate Constitutional Compliance</title>
+          <action>Ensure specification doesn't violate project principles</action>
+          <validation_points>
+            <point>Feature aligns with project values</point>
+            <point>Implementation approach respects constraints</point>
+            <point>User experience matches project standards</point>
+          </validation_points>
+        </step>
+      </steps>
+    </phase>
+
+    <phase name="specification_creation">
+      <description>Create comprehensive specification document</description>
+      <steps>
+        <step number="1">
+          <title>Structure Specification Document</title>
+          <action>Fill out spec template with gathered requirements</action>
+          <template_sections>
+            <section>Overview and Purpose</section>
+            <section>User Stories</section>
+            <section>Functional Requirements</section>
+            <section>Non-Functional Requirements</section>
+            <section>Acceptance Criteria</section>
+            <section>Technical Constraints</section>
+            <section>Dependencies</section>
+          </template_sections>
+        </step>
+
+        <step number="2">
+          <title>Write Specification File</title>
+          <tools>
+            <tool>write_to_file</tool>
+            <path>{SPEC_FILE from script output}</path>
+            <purpose>Create the complete specification document</purpose>
+          </tools>
+          <quality_checks>
+            <check>All template sections are completed</check>
+            <check>Requirements are specific and actionable</check>
+            <check>Success criteria are measurable</check>
+            <check>Constitutional compliance is maintained</check>
+          </quality_checks>
+        </step>
+      </steps>
+    </phase>
+
+    <phase name="validation_and_handoff">
+      <description>Validate specification and prepare for planning phase</description>
+      <steps>
+        <step number="1">
+          <title>Review Specification Quality</title>
+          <action>Validate specification completeness and clarity</action>
+          <checklist>
+            <item>All user stories include acceptance criteria</item>
+            <item>Requirements are unambiguous</item>
+            <item>Technical constraints are documented</item>
+            <item>Dependencies are identified</item>
+          </checklist>
+        </step>
+
+        <step number="2">
+          <title>Prepare for Planning Phase</title>
+          <action>Document handoff information for Plan Architect mode</action>
+          <handoff_artifacts>
+            <artifact>BRANCH_NAME for continued work</artifact>
+            <artifact>SPEC_FILE path for planning reference</artifact>
+            <artifact>Summary of key requirements</artifact>
+            <artifact>Identified dependencies and constraints</artifact>
+          </handoff_artifacts>
+        </step>
+      </steps>
+    </phase>
+  </main_workflow>
+
+  <completion_criteria>
+    <criterion>Specification file is created and complete</criterion>
+    <criterion>All template sections are filled with meaningful content</criterion>
+    <criterion>Requirements are specific and actionable</criterion>
+    <criterion>Constitutional compliance is verified</criterion>
+    <criterion>Feature branch is ready for planning phase</criterion>
+    <criterion>Handoff information is documented for next phase</criterion>
+  </completion_criteria>
+</spec_writer_workflow>

@@ -1,0 +1,181 @@
+<plan_architect_workflow>
+  <mode_overview>
+    The Plan Architect mode handles the second step in spec-driven development: analyzing feature specifications
+    and creating comprehensive implementation plans. This mode integrates with spec-kit's /plan command workflow,
+    executing the plan-template.md phases to generate research, data models, contracts, and task outlines.
+  </mode_overview>
+
+  <initialization_steps>
+    <step number="1">
+      <title>Initialize Planning Context</title>
+      <action>Run spec-kit planning setup script</action>
+      <tools>
+        <tool>execute_command</tool>
+        <command>bash scripts/setup-plan.sh --json</command>
+        <purpose>Get planning context with absolute paths</purpose>
+      </tools>
+      <details>
+        Parse JSON output for:
+        - FEATURE_SPEC: Path to the feature specification file
+        - IMPL_PLAN: Path for the implementation plan
+        - SPECS_DIR: Directory for generated planning artifacts
+        - BRANCH: Current feature branch name
+      </details>
+      <validation>Verify all paths are absolute and accessible</validation>
+    </step>
+
+    <step number="2">
+      <title>Analyze Feature Specification</title>
+      <action>Read and understand the feature requirements</action>
+      <tools>
+        <tool>read_file</tool>
+        <purpose>Understanding feature requirements and constraints</purpose>
+      </tools>
+      <analysis_points>
+        <point>Feature requirements and user stories</point>
+        <point>Functional and non-functional requirements</point>
+        <point>Success criteria and acceptance criteria</point>
+        <point>Technical constraints and dependencies</point>
+      </analysis_points>
+      <validation>Ensure complete understanding of specification</validation>
+    </step>
+
+    <step number="3">
+      <title>Review Project Constitution</title>
+      <action>Load constitutional requirements for planning alignment</action>
+      <tools>
+        <tool>read_file</tool>
+        <path>memory/constitution.md</path>
+        <purpose>Understanding constitutional requirements for planning</purpose>
+      </tools>
+      <validation>Identify constitutional constraints for implementation</validation>
+    </step>
+
+    <step number="4">
+      <title>Load Planning Template</title>
+      <action>Examine the plan template execution flow</action>
+      <tools>
+        <tool>read_file</tool>
+        <path>templates/plan-template.md</path>
+        <purpose>Understanding planning phases and execution steps</purpose>
+      </tools>
+      <validation>Understand all planning phases and gate checks</validation>
+    </step>
+  </initialization_steps>
+
+  <main_workflow>
+    <phase name="planning_execution">
+      <description>Execute the plan template phases with progress tracking</description>
+      <progress_tracking>
+        <tool>update_todo_list</tool>
+        <initial_todos>
+          <todo>Phase 0: Research and Technical Analysis</todo>
+          <todo>Phase 1: Data Model and Contract Design</todo>
+          <todo>Phase 2: Task Generation and Planning</todo>
+          <todo>Validation and Handoff</todo>
+        </initial_todos>
+      </progress_tracking>
+
+      <step number="1">
+        <title>Phase 0: Research and Technical Analysis</title>
+        <action>Generate research.md with technical decisions and analysis</action>
+        <research_areas>
+          <area>Technology stack analysis and recommendations</area>
+          <area>Architecture pattern evaluation</area>
+          <area>Integration points and dependencies</area>
+          <area>Performance and scalability considerations</area>
+          <area>Security and compliance requirements</area>
+        </research_areas>
+        <tools>
+          <tool>codebase_search</tool>
+          <query>existing similar features or architectural patterns</query>
+          <tool>write_to_file</tool>
+          <purpose>Create research artifact in specs directory</purpose>
+        </tools>
+        <validation>Research addresses all constitutional and technical requirements</validation>
+      </step>
+
+      <step number="2">
+        <title>Phase 1: Data Model and Contract Design</title>
+        <action>Generate data models, API contracts, and quickstart documentation</action>
+        <artifacts>
+          <artifact>
+            <name>data-model.md</name>
+            <content>Entity definitions, relationships, and data flow</content>
+          </artifact>
+          <artifact>
+            <name>contracts directory</name>
+            <content>API endpoint specifications, schemas, and examples</content>
+          </artifact>
+          <artifact>
+            <name>quickstart.md</name>
+            <content>Test scenarios and integration examples</content>
+          </artifact>
+        </artifacts>
+        <design_principles>
+          <principle>Follow constitutional data handling requirements</principle>
+          <principle>Ensure API contracts are complete and testable</principle>
+          <principle>Design for scalability and maintainability</principle>
+        </design_principles>
+        <validation>All artifacts are complete and align with specification</validation>
+      </step>
+
+      <step number="3">
+        <title>Phase 2: Task Generation and Preliminary Planning</title>
+        <action>Create preliminary task outline for implementation</action>
+        <focus_areas>
+          <area>Setup tasks: Project initialization, dependencies, configuration</area>
+          <area>Test tasks: Contract tests, integration scenarios</area>
+          <area>Core tasks: Entity implementation, service creation</area>
+          <area>Integration tasks: Database connections, middleware</area>
+          <area>Polish tasks: Performance optimization, documentation</area>
+        </focus_areas>
+        <validation>Task outline is comprehensive and follows TDD principles</validation>
+      </step>
+    </phase>
+
+    <phase name="progress_tracking_and_validation">
+      <description>Track progress and validate plan completeness</description>
+      <step number="1">
+        <title>Update Progress Tracking</title>
+        <action>Mark completed phases and update todo list</action>
+        <tools>
+          <tool>update_todo_list</tool>
+          <purpose>Reflect current planning progress</purpose>
+        </tools>
+      </step>
+
+      <step number="2">
+        <title>Validate Plan Completeness</title>
+        <action>Ensure all required artifacts are generated</action>
+        <validation_checklist>
+          <item>All phases show complete status</item>
+          <item>Required artifacts are generated in specs directory</item>
+          <item>No ERROR states in execution</item>
+          <item>Constitutional compliance maintained throughout</item>
+        </validation_checklist>
+      </step>
+
+      <step number="3">
+        <title>Prepare Handoff to Task Orchestrator</title>
+        <action>Document artifacts and context for task generation phase</action>
+        <handoff_artifacts>
+          <artifact>Branch name for continued work</artifact>
+          <artifact>Generated planning artifacts paths</artifact>
+          <artifact>Key architectural decisions</artifact>
+          <artifact>Dependency requirements</artifact>
+          <artifact>Constitutional compliance notes</artifact>
+        </handoff_artifacts>
+      </step>
+    </phase>
+  </main_workflow>
+
+  <completion_criteria>
+    <criterion>All plan template phases executed successfully</criterion>
+    <criterion>Required artifacts generated in specs directory</criterion>
+    <criterion>Progress tracking shows all phases complete</criterion>
+    <criterion>Constitutional compliance verified</criterion>
+    <criterion>No error states in execution</criterion>
+    <criterion>Handoff documentation prepared for task orchestrator</criterion>
+  </completion_criteria>
+</plan_architect_workflow>

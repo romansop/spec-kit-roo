@@ -1,0 +1,237 @@
+<constitution_guardian_workflow>
+  <mode_overview>
+    The Constitution Guardian mode ensures constitutional compliance throughout the spec-driven development lifecycle.
+    This mode can be invoked at any phase to validate that specifications, plans, or implementations align with
+    project principles and non-negotiable requirements defined in memory/constitution.md.
+  </mode_overview>
+
+  <initialization_steps>
+    <step number="1">
+      <title>Load Project Constitution</title>
+      <action>Read and analyze the project constitution document</action>
+      <tools>
+        <tool>read_file</tool>
+        <path>memory/constitution.md</path>
+        <purpose>Understanding project principles and non-negotiable requirements</purpose>
+      </tools>
+      <analysis_points>
+        <point>Core project values and principles</point>
+        <point>Non-negotiable technical requirements</point>
+        <point>Quality standards and constraints</point>
+        <point>Architectural principles</point>
+        <point>Security and compliance requirements</point>
+        <point>User experience guidelines</point>
+      </analysis_points>
+      <validation>Understand all constitutional requirements for validation</validation>
+    </step>
+
+    <step number="2">
+      <title>Identify Validation Context</title>
+      <action>Determine what needs to be validated against the constitution</action>
+      <validation_types>
+        <type name="specification_validation">
+          <description>Validate feature specifications for constitutional alignment</description>
+          <focus>Requirements, user stories, acceptance criteria</focus>
+        </type>
+        <type name="planning_validation">
+          <description>Validate implementation plans and technical decisions</description>
+          <focus>Architecture, technology choices, design patterns</focus>
+        </type>
+        <type name="implementation_validation">
+          <description>Validate code and implementation against constitutional constraints</description>
+          <focus>Code quality, security, performance, maintainability</focus>
+        </type>
+        <type name="process_validation">
+          <description>Validate that development processes follow constitutional guidelines</description>
+          <focus>Testing standards, documentation requirements, review processes</focus>
+        </type>
+      </validation_types>
+    </step>
+
+    <step number="3">
+      <title>Gather Validation Targets</title>
+      <action>Identify files and artifacts to be validated</action>
+      <tools>
+        <tool>codebase_search</tool>
+        <query>specifications plans implementations that need constitutional review</query>
+        <purpose>Finding relevant files for validation</purpose>
+      </tools>
+      <validation>Ensure all relevant artifacts are identified for review</validation>
+    </step>
+  </initialization_steps>
+
+  <main_workflow>
+    <phase name="constitutional_analysis">
+      <description>Analyze artifacts against constitutional requirements</description>
+      <step number="1">
+        <title>Load Target Artifacts</title>
+        <action>Read and analyze the artifacts to be validated</action>
+        <artifact_types>
+          <artifact>Specification files (specs/*.md)</artifact>
+          <artifact>Planning documents (research.md, plan.md)</artifact>
+          <artifact>Design artifacts (data-model.md, contracts/)</artifact>
+          <artifact>Implementation files (source code)</artifact>
+          <artifact>Documentation files</artifact>
+        </artifact_types>
+        <tools>
+          <tool>read_file</tool>
+          <purpose>Understanding current state of artifacts</purpose>
+        </tools>
+      </step>
+
+      <step number="2">
+        <title>Perform Constitutional Compliance Check</title>
+        <action>Systematically validate each artifact against constitutional requirements</action>
+        <validation_framework>
+          <check_category name="core_values">
+            <check>Artifact aligns with project mission and vision</check>
+            <check>Proposed changes support project goals</check>
+            <check>User experience matches project standards</check>
+          </check_category>
+          <check_category name="technical_constraints">
+            <check>Architecture follows constitutional patterns</check>
+            <check>Technology choices align with project standards</check>
+            <check>Performance requirements are met</check>
+            <check>Security standards are maintained</check>
+          </check_category>
+          <check_category name="quality_standards">
+            <check>Code quality meets constitutional requirements</check>
+            <check>Testing standards are followed</check>
+            <check>Documentation requirements are satisfied</check>
+            <check>Maintainability principles are observed</check>
+          </check_category>
+        </validation_framework>
+      </step>
+
+      <step number="3">
+        <title>Document Compliance Status</title>
+        <action>Create detailed compliance report</action>
+        <report_structure>
+          <section name="executive_summary">
+            <content>Overall compliance status and key findings</content>
+          </section>
+          <section name="detailed_findings">
+            <content>Specific compliance checks with pass/fail status</content>
+          </section>
+          <section name="violations_and_concerns">
+            <content>Identified constitutional violations and areas of concern</content>
+          </section>
+          <section name="recommendations">
+            <content>Specific actions to achieve constitutional compliance</content>
+          </section>
+        </report_structure>
+      </step>
+    </phase>
+
+    <phase name="compliance_resolution">
+      <description>Address identified constitutional compliance issues</description>
+      <step number="1">
+        <title>Prioritize Compliance Issues</title>
+        <action>Categorize and prioritize identified violations</action>
+        <priority_levels>
+          <priority level="critical">
+            <description>Violations that prevent feature from being constitutional</description>
+            <action>Must be resolved before proceeding</action>
+          </priority>
+          <priority level="high">
+            <description>Significant deviations from constitutional principles</description>
+            <action>Should be resolved for optimal alignment</action>
+          </priority>
+          <priority level="medium">
+            <description>Minor inconsistencies with constitutional guidelines</description>
+            <action>Can be addressed in current or future iterations</action>
+          </priority>
+        </priority_levels>
+      </step>
+
+      <step number="2">
+        <title>Provide Resolution Guidance</title>
+        <action>Offer specific recommendations for addressing each compliance issue</action>
+        <guidance_types>
+          <guidance type="specification_adjustments">
+            <description>Changes needed in feature specifications</description>
+            <examples>
+              <example>Modify user stories to align with constitutional UX principles</example>
+              <example>Add missing security requirements to specification</example>
+            </examples>
+          </guidance>
+          <guidance type="planning_modifications">
+            <description>Changes needed in implementation plans</description>
+            <examples>
+              <example>Select different technology stack to meet constitutional constraints</example>
+              <example>Adjust architecture to follow constitutional patterns</example>
+            </examples>
+          </guidance>
+          <guidance type="implementation_changes">
+            <description>Changes needed in code implementation</description>
+            <examples>
+              <example>Refactor code to meet constitutional quality standards</example>
+              <example>Add required security measures per constitutional requirements</example>
+            </examples>
+          </guidance>
+        </guidance_types>
+      </step>
+
+      <step number="3">
+        <title>Coordinate Resolution with Appropriate Modes</title>
+        <action>Facilitate handoff to modes that can implement the necessary changes</action>
+        <mode_coordination>
+          <handoff target_mode="spec-writer">
+            <scenario>Constitutional violations in specifications</scenario>
+            <action>Switch to Spec Writer mode to update specifications</action>
+          </handoff>
+          <handoff target_mode="plan-architect">
+            <scenario>Constitutional issues in implementation plans</scenario>
+            <action>Switch to Plan Architect mode to adjust plans</action>
+          </handoff>
+          <handoff target_mode="code">
+            <scenario>Constitutional violations in implementation</scenario>
+            <action>Switch to Code mode to fix implementation issues</action>
+          </handoff>
+        </mode_coordination>
+      </step>
+    </phase>
+
+    <phase name="continuous_monitoring">
+      <description>Provide ongoing constitutional guidance throughout development</description>
+      <step number="1">
+        <title>Establish Constitutional Checkpoints</title>
+        <action>Define review points throughout the development lifecycle</action>
+        <checkpoints>
+          <checkpoint phase="specification">
+            <timing>After initial specification creation</timing>
+            <focus>Requirements and user story constitutional alignment</focus>
+          </checkpoint>
+          <checkpoint phase="planning">
+            <timing>After each planning phase completion</timing>
+            <focus>Technical decisions and architectural constitutional alignment</focus>
+          </checkpoint>
+          <checkpoint phase="implementation">
+            <timing>Before task completion and code review</timing>
+            <focus>Implementation constitutional compliance</focus>
+          </checkpoint>
+        </checkpoints>
+      </step>
+
+      <step number="2">
+        <title>Provide Proactive Guidance</title>
+        <action>Offer constitutional guidance before issues arise</action>
+        <guidance_approach>
+          <approach>Monitor for potential constitutional risks</approach>
+          <approach>Suggest constitutional-compliant alternatives</approach>
+          <approach>Educate team on constitutional requirements</approach>
+          <approach>Facilitate constitutional decision-making</approach>
+        </guidance_approach>
+      </step>
+    </phase>
+  </main_workflow>
+
+  <completion_criteria>
+    <criterion>Constitutional requirements fully understood and documented</criterion>
+    <criterion>All target artifacts analyzed for constitutional compliance</criterion>
+    <criterion>Compliance violations identified and categorized by priority</criterion>
+    <criterion>Specific resolution recommendations provided</criterion>
+    <criterion>Handoff coordination completed with appropriate modes</criterion>
+    <criterion>Ongoing constitutional monitoring established</criterion>
+  </completion_criteria>
+</constitution_guardian_workflow>
