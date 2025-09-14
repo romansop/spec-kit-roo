@@ -42,12 +42,12 @@ Initialize your project optimized for Roo Code:
 
 ```bash
 # Roo Code integration (recommended)
-uvx --from git+https://github.com/Michaelzag/spec-kit-roo.git specify init <PROJECT_NAME> --ai roo
+uvx --from git+https://github.com/romansop/spec-kit-roo.git specify init <PROJECT_NAME> --ai roo
 ```
 
 Or initialize in current directory:
 ```bash
-uvx --from git+https://github.com/Michaelzag/spec-kit-roo.git specify init --here --ai roo
+uvx --from git+https://github.com/romansop/spec-kit-roo.git specify init --here --ai roo
 ```
 
 ### 2. Create the spec
